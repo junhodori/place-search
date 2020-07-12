@@ -16,19 +16,22 @@
           >
             <v-card class="elevation-12">
               <v-toolbar
-                color="primary"
+                color="amber"
                 dark
                 flat
               >
-                <v-toolbar-title>Login form</v-toolbar-title>
+                <v-toolbar-title># Login</v-toolbar-title>
               </v-toolbar>
               <v-card-text>
-                <v-form>
+                <v-form
+                    ref="form"
+                >
                   <v-text-field
                     label="username"
                     name="username"
                     prepend-icon="mdi-account"
                     type="text"
+                    :rules="rulesUsername"
                     v-model="username"
                   ></v-text-field>
 
@@ -37,13 +40,14 @@
                     name="password"
                     prepend-icon="mdi-lock"
                     type="password"
+                    :rules="rulesPassword"
                     v-model="password"
                   ></v-text-field>
                 </v-form>
               </v-card-text>
               <v-card-actions>
                 <v-spacer></v-spacer>
-                <v-btn color="primary" @click="login">Login</v-btn>
+                <v-btn color="amber" @click="login">Login</v-btn>
               </v-card-actions>
             </v-card>
           </v-col>
@@ -57,8 +61,14 @@
 export default {
     data() {
         return {
-            username: 'ryan',
-            password: '12345'
+            username: '',
+            password: '',
+            rulesUsername: [
+                v => !!v || 'username 을 확인하세요'
+            ],
+            rulesPassword: [
+                v => !!v || 'password 를 확인하세요'
+            ],            
         }
     },
     mounted: function() {
@@ -74,32 +84,14 @@ export default {
 
             $this.$store.dispatch('LOGIN', {username, password})
                 .then(() => $this.$router.push('/index'))
-                .catch(({message}) => this.msg = message)
-
-            // let url = 'login'
-            // let params = {
-            //     username: username,
-            //     password: password
-            // }
-
-            // $this.$http.post(url, params)
-            // .then((response) => {
-            //     console.log(response)
-            // }).catch(function(e) {
-            //     console.error(e)
-            // })
+                .catch(() => $this.validate())
         },
-        redirect: function() {
-            const {search} = window.location
-            const tokens = search.replace(/^\?/, '').split('&')
-            const {returnPath} = tokens.reduce((qs, tkn) => {
-                const pair = tkn.split('=')
-                qs[pair[0]] = decodeURIComponent(pair[1])
-                return qs
-            }, {})
-            // 리다이렉트 처리
-            this.$router.push(returnPath)
-        },
+        validate: function () {
+            let $this = this
+            $this.$refs.form.validate()
+            $this.username = null
+            $this.password = null
+        },        
     }
  }
 </script>

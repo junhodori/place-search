@@ -58,7 +58,7 @@
 
     },
     methods: {
-        beforePage: () => {
+        beforePage: function() {
             let $this = this
             $this.$router.go(-1)
         }

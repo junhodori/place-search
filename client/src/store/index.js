@@ -29,9 +29,12 @@ export default new Vuex.Store({
             .then((response) => {
                 if (response.status == 200) {
                     commit('LOGIN', response.headers['authorization'])
+                    resolve(response.status)
+                } else {
+                  reject(response.status)
                 }
-                resolve(response.status)
-            }).catch((e) => { reject(e)})
+                
+            }).catch((e) => { reject(e.status)})
         })
     },
     LOGOUT ({commit}) {

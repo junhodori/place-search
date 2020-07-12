@@ -26,14 +26,13 @@ export default new Router({
             beforeEnter: requireAuth()
         },
         {
-            path: '/denied',
-            component: Denied,
-            beforeEnter: requireAuth()
-        },
-        {
             path: '/index',
             component: Index,
             beforeEnter: requireAuth()
-        }
+        },
+        {
+            path: '/*',
+            component: Denied
+        }        
     ]
 })
