@@ -1,4 +1,10 @@
 package com.search.place.application.repository;
 
-public interface PopularKeywordRepository {
+import com.search.place.application.model.PopularKeyword;
+import org.springframework.data.repository.CrudRepository;
+
+import java.util.List;
+
+public interface PopularKeywordRepository extends CrudRepository<PopularKeyword, String> {
+    List<PopularKeyword> findAllByOrderById();
 }

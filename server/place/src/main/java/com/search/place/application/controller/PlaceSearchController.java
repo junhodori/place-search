@@ -17,7 +17,7 @@ public class PlaceSearchController {
     private PlaceSearchService placeSearchService;
 
     @GetMapping("placeSearch")
-    public String placeSearch(@RequestParam("query") String query) {
-        return placeSearchService.placeSearch(query);
+    public String placeSearch(@RequestParam("query") String query, @RequestParam("page") Integer page, @RequestParam("size") Integer size) {
+        return placeSearchService.placeSearch(query, page, size);
     }
 }

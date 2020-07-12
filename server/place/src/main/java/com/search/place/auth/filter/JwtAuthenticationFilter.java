@@ -3,10 +3,8 @@ package com.search.place.auth.filter;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.fasterxml.jackson.databind.ObjectMapper;
-
 import com.search.place.application.model.LoginViewModel;
 import com.search.place.application.model.UserPrincipal;
-
 import com.search.place.config.JwtProperties;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;

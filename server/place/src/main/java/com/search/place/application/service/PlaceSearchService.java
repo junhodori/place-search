@@ -1,5 +1,5 @@
 package com.search.place.application.service;
 
 public interface PlaceSearchService {
-    public String placeSearch(String query);
+    String placeSearch(String query, Integer page, Integer size);
 }

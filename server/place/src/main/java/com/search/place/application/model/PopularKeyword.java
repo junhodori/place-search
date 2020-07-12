@@ -14,7 +14,7 @@ import java.io.Serializable;
 @Setter
 @ToString
 @RedisHash("topKeyword")
-public class TopKeyword implements Serializable {
+public class PopularKeyword implements Serializable {
 
     @Id
     private Integer id;
@@ -26,7 +26,7 @@ public class TopKeyword implements Serializable {
     private Integer num;
 
     @Builder
-    public TopKeyword(Integer id, String keyword, Integer num) {
+    public PopularKeyword(Integer id, String keyword, Integer num) {
         this.id = id;
         this.keyword = keyword;
         this.num = num;

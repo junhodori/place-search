@@ -18,8 +18,11 @@ public class PlaceSearchServiceImpl implements PlaceSearchService {
     @Autowired
     private RestTemplate restTemplate;
 
+    @Autowired
+    private PopularKeywordService popularKeywordService;
+
     @Override
-    public String placeSearch(String query) {
+    public String placeSearch(String query, Integer page, Integer size) {
         final HttpHeaders headers = new HttpHeaders();
         headers.set("Authorization", "KakaoAK edec42216b39a35f0a6d0ee51a555f9a");
 
@@ -31,9 +34,13 @@ public class PlaceSearchServiceImpl implements PlaceSearchService {
                     .queryParam("y", "37.514322572335935")
                     .queryParam("x", "127.06283102249932")
                     .queryParam("radius", "20000")
-                    .queryParam("query", query).build(false);
+                    .queryParam("query", query)
+                    .queryParam("page", page)
+                    .queryParam("size", size)
+                    .build(false);
 
         log.debug(builder.toUriString());
+        popularKeywordService.insertPopularKeyword(query);
 
         ResponseEntity<String> response = restTemplate.exchange(builder.toUriString(), HttpMethod.GET, entity, String.class);
 

@@ -1,17 +1,21 @@
 package com.search.place.application.model;
 
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.data.redis.core.RedisHash;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 @Entity
+//@RedisHash("keyword")
 @Getter
 @Setter
-public class User {
+public class User implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -29,6 +33,7 @@ public class User {
 
     private String permissions = "";
 
+    @Builder
     public User(String username, String password, String roles, String permissions){
         this.username = username;
         this.password = password;

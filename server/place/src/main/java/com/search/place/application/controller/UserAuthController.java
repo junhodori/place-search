@@ -1,7 +1,6 @@
 package com.search.place.application.controller;
 
 import com.search.place.application.model.User;
-
 import com.search.place.application.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -37,8 +36,8 @@ public class UserAuthController {
     }
 
     // Available to ROLE_ADMIN
-    @GetMapping("admin/users")
-    public List<User> allUsers(){
-        return this.userRepository.findAll();
-    }
+//    @GetMapping("admin/users")
+//    public List<User> allUsers(){
+//        return this.userRepository.findAll();
+//    }
 }
