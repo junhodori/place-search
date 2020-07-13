@@ -14,36 +14,36 @@
             sm="8"
             md="4"
           >
-            <v-card class="elevation-12">
-              <v-toolbar
-                color="primary"
-                dark
-                flat
-              >
-                <v-toolbar-title>Logout</v-toolbar-title>
-              </v-toolbar>
-              <v-card-text>
-                <v-form>
-                  <v-text-field
-                    label="Login"
-                    name="login"
-                    prepend-icon="mdi-account"
-                    type="text"
-                  ></v-text-field>
-
-                  <v-text-field
-                    id="password"
-                    label="Password"
-                    name="password"
-                    prepend-icon="mdi-lock"
-                    type="password"
-                  ></v-text-field>
-                </v-form>
-              </v-card-text>
-              <v-card-actions>
-                <v-spacer></v-spacer>
-                <v-btn color="primary">Login</v-btn>
-              </v-card-actions>
+            <v-card class="elevation-12">             
+                <v-alert
+                    dense
+                    outlined
+                    type="success"
+                >
+                    <strong>로그아웃 성공</strong>
+                    <br/>
+                    다시 로그인 하시겠습니까?
+                    <v-divider
+                        class="my-4 success"
+                        style="opacity: 0.22"
+                    ></v-divider>
+                    <v-row
+                            align="center"
+                            no-gutters
+                        >
+                        <v-spacer></v-spacer>
+                        <v-col class="shrink">
+                            <v-btn
+                                align="right" 
+                                color="success"
+                                outlined
+                                @click="login"
+                            >
+                                Login
+                            </v-btn>                            
+                        </v-col>
+                    </v-row>
+                </v-alert>
             </v-card>
           </v-col>
         </v-row>
@@ -54,8 +54,17 @@
 
 <script>
   export default {
-    props: {
-      source: String,
+    mounted: function() {
+        let $this = this
+        $this.$store.dispatch('LOGOUT')
+            .then(() => console.log('Logout Success!'))
+            .catch((e) => console.log(e))
     },
+    methods: {
+        login: function() {
+            let $this = this
+            $this.$router.push('/login')
+        }
+    }
   }
 </script>

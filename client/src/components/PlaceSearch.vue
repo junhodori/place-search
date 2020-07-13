@@ -6,6 +6,7 @@
             :color="color[index % color.length]"
             small
             icon="mdi-star"
+            right
         >
             <template v-slot:opposite>
                 <span
@@ -14,7 +15,7 @@
                 ></span>
             </template>
             <div class="py-4">
-                <h2 :class="`headline font-weight-light mb-4 ${color[index % color.length]}--text`">{{item.place_name}}</h2>
+                <h2 :class="`headline ${color[index % color.length]}--text`">{{item.place_name}}</h2>
                 <div>
                     {{item.road_address_name}}
                 </div>

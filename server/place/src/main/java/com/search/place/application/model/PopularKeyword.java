@@ -12,8 +12,7 @@ import java.io.Serializable;
 
 @Getter
 @Setter
-@ToString
-@RedisHash("topKeyword")
+@RedisHash("popularKeyword")
 public class PopularKeyword implements Serializable {
 
     @Id

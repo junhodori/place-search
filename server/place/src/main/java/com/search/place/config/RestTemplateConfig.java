@@ -11,6 +11,10 @@ import org.springframework.web.client.RestTemplate;
 import java.nio.charset.Charset;
 import java.time.Duration;
 
+/**
+ * RestTemplate 설정
+ * (동기방식 REST Client)
+ */
 @Configuration
 public class RestTemplateConfig {
 

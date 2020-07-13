@@ -3,7 +3,7 @@ package com.search.place.auth.filter;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.search.place.application.model.LoginViewModel;
+import com.search.place.application.model.Login;
 import com.search.place.application.model.UserPrincipal;
 import com.search.place.config.JwtProperties;
 import lombok.RequiredArgsConstructor;
@@ -26,29 +26,24 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 
     private final AuthenticationManager authenticationManager;
 
-
-    /* Trigger when we issue POST request to /login
-    We also need to pass in {"username":"minho", "password":"minho123"} in the request body
-    * */
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
-
-        // Grab credentials and map then to LoginViewModel
-        LoginViewModel credentials = null;
+        // POST {"username": "", "password": ""} 가져와서 로그인 모델에 매핑
+        Login credentials = null;
         try {
-            credentials = new ObjectMapper().readValue(request.getInputStream(), LoginViewModel.class);
+            credentials = new ObjectMapper().readValue(request.getInputStream(), Login.class);
         } catch (IOException e) {
             e.printStackTrace();
         }
 
-        // Create login token
+        // Spring Security 내부에서 사용하는 Token 생성
         UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
                 credentials.getUsername(),
                 credentials.getPassword(),
                 new ArrayList<>()
         );
 
-        // Authenticate user
+        // 인증처리
         Authentication auth = authenticationManager.authenticate(authenticationToken);
         return auth;
     }
@@ -56,16 +51,15 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 
     @Override
     protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authResult) throws IOException, ServletException {
-        // Grab principal
         UserPrincipal principal = (UserPrincipal) authResult.getPrincipal();
 
-        // Create JWT Token
+        // JSON 웹토큰 생성
         String token = JWT.create()
                 .withSubject(principal.getUsername())
                 .withExpiresAt(new Date(System.currentTimeMillis() + JwtProperties.EXPIRATION_TIME))
                 .sign(Algorithm.HMAC512(JwtProperties.SECRET.getBytes()));
 
-        // Add token in response
+        // 헤더 정보에 JSON 웹토큰 추가
         response.addHeader(JwtProperties.HEADER_STRING, JwtProperties.TOKEN_PREFIX + token);
     }
 }

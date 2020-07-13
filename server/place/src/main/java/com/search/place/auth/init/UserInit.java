@@ -10,9 +10,15 @@ import org.springframework.stereotype.Service;
 import java.util.Arrays;
 import java.util.List;
 
+/**
+ * 애플리케이션 실행시점에 사용자 데이터 생성
+ *  - muzi (PW : 12345 / Role : ADMIN)
+ *  - appeach (PW : 12345 / Role : MANAGER)
+ *  - ryan (PW : 12345 / Role : USER)
+ */
 @RequiredArgsConstructor
 @Service
-public class DbInit implements CommandLineRunner {
+public class UserInit implements CommandLineRunner {
 
     private final UserRepository userRepository;
 
@@ -20,17 +26,14 @@ public class DbInit implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-        // Delete all
         this.userRepository.deleteAll();
 
-        // create users
-        User first = new User("ryan", passwordEncoder.encode("12345"),"USER","");
-        User second = new User("muzi", passwordEncoder.encode("12345"),"ADMIN","ACCESS_TEST1,ACCESS_TEST2");
-        User third = new User("appeach", passwordEncoder.encode("12345"),"MANAGER","ACCESS_TEST1");
+        User first = new User("muzi", passwordEncoder.encode("12345"),"ADMIN","");
+        User second = new User("appeach", passwordEncoder.encode("12345"),"MANAGER","");
+        User third = new User("ryan", passwordEncoder.encode("12345"),"USER","");
 
         List<User> users = Arrays.asList(first, second, third);
 
-        // save to db
         this.userRepository.saveAll(users);
     }
 }

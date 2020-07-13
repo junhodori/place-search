@@ -7,3 +7,9 @@ spring:
         max-active: 10
         max-idle: 10
         min-idle: 2
+api:
+  kakao:
+    url: https://dapi.kakao.com/v2/local/search/keyword.json
+    authorization:
+      prefix: KakaoAK
+      key: edec42216b39a35f0a6d0ee51a555f9a

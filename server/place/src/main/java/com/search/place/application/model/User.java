@@ -11,15 +11,14 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-@Entity
-//@RedisHash("keyword")
+//@Entity
+@RedisHash("user")
 @Getter
 @Setter
 public class User implements Serializable {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
+    private String id;
 
     @Column(nullable = false)
     private String username;
@@ -35,6 +34,7 @@ public class User implements Serializable {
 
     @Builder
     public User(String username, String password, String roles, String permissions){
+        this.id = username;
         this.username = username;
         this.password = password;
         this.roles = roles;
@@ -43,8 +43,7 @@ public class User implements Serializable {
         this.active = 1;
     }
 
-    protected User(){
-    }
+    protected User() { }
 
     public List<String> getRoleList(){
         if(this.roles.length()>0){

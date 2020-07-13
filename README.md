@@ -45,3 +45,6 @@ https://velog.io/@minholee_93/Spring-Security-JWT-Security-Spring-Boot-10
 
 VueX, Vue-router
 참고사이트 : http://jeonghwan-kim.github.io/2018/03/26/vue-authentication.html
+
+Bean 등록
+참고사이트 : https://cbw1030.tistory.com/54

@@ -22,6 +22,15 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import java.util.Arrays;
 
+/**
+ * Spring Security 설정
+ *  - Cors 허용
+ *  - Authorization 헤더 접근 허용
+ *  - /login : POST 메서드로 누구나 허용
+ *  - /api/* : ADMIN, MANAGER 롤만 허용
+ *  - 모든 요청 : 인증된 사용자만 허용
+ *  - 패스워드 암호화 : BCryptPasswordEncoder
+ */
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
@@ -71,8 +80,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                     .addFilter(new JwtAuthorizationFilter(authenticationManager(),  this.userRepository))
                 .authorizeRequests()
                     .antMatchers(HttpMethod.POST, "/login").permitAll()
-                    .antMatchers("/api/public/management/*").hasRole("MANAGER")
-                    .antMatchers("/api/public/admin/*").hasRole("ADMIN")
+                    .antMatchers("/api/*").hasAnyRole("ADMIN", "MANAGER")
                     .anyRequest().authenticated();
     }
 

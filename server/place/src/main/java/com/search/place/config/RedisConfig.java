@@ -8,6 +8,10 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.repository.configuration.EnableRedisRepositories;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 
+/**
+ * Redis 설정
+ * Redis Client로는 Lettuce 사용 (Jedis에 비해 고성능)
+ */
 @Configuration
 @EnableRedisRepositories
 public class RedisConfig {

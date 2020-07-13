@@ -12,7 +12,6 @@ import java.io.Serializable;
 
 @Getter
 @Setter
-@ToString
 @RedisHash("keyword")
 public class Keyword implements Serializable {
 

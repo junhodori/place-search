@@ -33,6 +33,7 @@
                     type="text"
                     :rules="rulesUsername"
                     v-model="username"
+                    @keyup.enter="login()"
                   ></v-text-field>
 
                   <v-text-field
@@ -42,12 +43,13 @@
                     type="password"
                     :rules="rulesPassword"
                     v-model="password"
+                    @keyup.enter="login()"
                   ></v-text-field>
                 </v-form>
               </v-card-text>
               <v-card-actions>
                 <v-spacer></v-spacer>
-                <v-btn color="amber" @click="login">Login</v-btn>
+                <v-btn color="amber" @click="login()">Login</v-btn>
               </v-card-actions>
             </v-card>
           </v-col>

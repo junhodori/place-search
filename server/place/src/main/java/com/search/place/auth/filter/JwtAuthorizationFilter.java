@@ -27,41 +27,37 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
         this.userRepository = userRepository;
     }
 
-
-    // endpoint every request hit with authorization
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws IOException, ServletException {
-        // Read the Authorization header, where the JWT Token should be
+        // 권한 헤더 정보 일기
         String header = request.getHeader(JwtProperties.HEADER_STRING);
 
-        // If header does not contain BEARER or is null delegate to Spring impl and exit
-        if(header == null || !header.startsWith(JwtProperties.TOKEN_PREFIX)){
-            // rest of the spring pipeline
+        // 권한 헤더 정보가 없거나 Bearer 로 시작되지 않는 경우 필터 실행 계속
+        if (header == null || !header.startsWith(JwtProperties.TOKEN_PREFIX)) {
             chain.doFilter(request, response);
             return;
         }
 
-        // If header is present, try grab user principal from database and perform authorization
+        // 권한 헤더 정보가 있으면 데이터베이스에서 사용자 정보를 가져와서 권한 부여 수행
         Authentication authentication = getUsernamePasswordAuthentication(request);
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
-        // Continue filter execution
+        // 필터 실행 계속
         chain.doFilter(request, response);
     }
 
     private Authentication getUsernamePasswordAuthentication(HttpServletRequest request) {
         String token = request.getHeader(JwtProperties.HEADER_STRING);
-        if(token != null){
-            // parse the token and validate it (decode)
+        if (token != null) {
+            // 토큰 구문 분석 및 유효성 검사
             String username = JWT.require(Algorithm.HMAC512(JwtProperties.SECRET.getBytes()))
                     .build()
                     .verify(token.replace(JwtProperties.TOKEN_PREFIX, ""))
                     .getSubject();
 
-            // Search in the DB if we find the user by token subject (username)
-            // If so, then grab user details and create spring auth token using username, pass, authorities/roles
-            if(username != null){
-                User user = userRepository.findByUsername(username);
+            // DB에서 사용자 정보를 검색하여 권한과 롤을 사용하여 Spring Security 토큰 생성
+            if (username != null) {
+                User user = userRepository.findById(username).get();
                 UserPrincipal principal = new UserPrincipal(user);
                 UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(username, null, principal.getAuthorities());
                 return auth;

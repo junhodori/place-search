@@ -1,9 +1,8 @@
 package com.search.place.application.service;
 
+import com.search.place.application.openapi.OpenApi;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -22,33 +21,20 @@ public class PlaceSearchServiceImpl implements PlaceSearchService {
     private PopularKeywordService popularKeywordService;
 
     @Override
-    public String placeSearch(String query, Integer page, Integer size) {
-        final HttpHeaders headers = new HttpHeaders();
-        headers.set("Authorization", "KakaoAK edec42216b39a35f0a6d0ee51a555f9a");
-
-        final HttpEntity<String> entity = new HttpEntity<String>(headers);
-
-        String url = "https://dapi.kakao.com/v2/local/search/keyword.json";
-
-        UriComponents builder = UriComponentsBuilder.fromHttpUrl(url)
-                    .queryParam("y", "37.514322572335935")
-                    .queryParam("x", "127.06283102249932")
+    public String placeSearch(OpenApi openApi, String query, Integer page, Integer size, String longitude, String latitude) {
+        UriComponents builder = UriComponentsBuilder.fromHttpUrl(openApi.getUrl())
+                    .queryParam("y", longitude)
+                    .queryParam("x", latitude)
                     .queryParam("radius", "20000")
+                    .queryParam("sort", "distance")
                     .queryParam("query", query)
                     .queryParam("page", page)
                     .queryParam("size", size)
                     .build(false);
 
-        log.debug(builder.toUriString());
         popularKeywordService.insertPopularKeyword(query);
 
-        ResponseEntity<String> response = restTemplate.exchange(builder.toUriString(), HttpMethod.GET, entity, String.class);
-
-        if (response.getStatusCodeValue() == 200) {
-            return response.getBody();
-        } else {
-            return response.getBody();
-        }
-
+        ResponseEntity<String> response = restTemplate.exchange(builder.toUriString(), HttpMethod.GET, openApi.getEntity(), String.class);
+        return response.getBody();
     }
 }

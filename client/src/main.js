@@ -6,7 +6,6 @@ import vuetify from './plugins/vuetify';
 
 Vue.config.productionTip = false
 
-// Vue Axios Setting
 import axios from 'axios'
 import VueAxios from 'vue-axios'
 
