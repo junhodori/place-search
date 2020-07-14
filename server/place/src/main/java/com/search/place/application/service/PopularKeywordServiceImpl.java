@@ -5,10 +5,11 @@ import com.search.place.application.model.PopularKeyword;
 import com.search.place.application.repository.KeywordRepository;
 import com.search.place.application.repository.PopularKeywordRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.connection.RedisZSetCommands;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 public class PopularKeywordServiceImpl implements PopularKeywordService {
@@ -19,149 +20,92 @@ public class PopularKeywordServiceImpl implements PopularKeywordService {
     @Autowired
     private PopularKeywordRepository popularKeywordRepository;
 
+    @Autowired
+    RedisTemplate redisTemplate;
+
     @Override
     public void insertPopularKeyword(String keyword) {
-
-        Optional<Keyword> _keyword = keywordRepository.findById(keyword);
-        if (_keyword.isPresent()) {
-            Keyword __keyword = Keyword.builder()
-                    .id(_keyword.get().getId())
-                    .num(_keyword.get().getNum() + 1)
-                    .build();
-            keywordRepository.save(__keyword);
-        } else {
-            Keyword __keyword = Keyword.builder()
-                    .id(keyword)
-                    .num(1)
-                    .build();
-            keywordRepository.save(__keyword);
-        }
-
-        /**
-         * 인기 검색어 키워드를 정렬해서 모두 받아오기
-         */
         List<PopularKeyword> popularKeywordList = popularKeywordRepository.findAllByOrderById();
 
         /**
-         * 인기 검색어 키워드가 1개도 없을 경우는 새로운 키워드로 초기화
+         * 검색한 키워드를 모두 저장
+         *  - 새로운 키워드는 카운트 1로 저장
+         *  - 기존 키워드는 기존 카운트 +1로 저장
          */
-        if (popularKeywordList.size() < 1) {
-            PopularKeyword _popularKeyword = null;
-            /**
-             * 기존 키워드 리스트에 있을경우 해당 카운트를 이용
-             */
-            if (_keyword.isPresent()) {
-                _popularKeyword = PopularKeyword.builder()
-                        .id(1)
-                        .keyword(keyword)
-                        .num(_keyword.get().getNum() + 1)
-                        .build();
-            } else {
-                _popularKeyword = PopularKeyword.builder()
-                        .id(1)
-                        .keyword(keyword)
-                        .num(1)
-                        .build();
-            }
+        Optional<Keyword> _keyword = keywordRepository.findById(keyword);
 
-            popularKeywordRepository.save(_popularKeyword);
+        Keyword __keyword = null;
 
+        if (_keyword.isPresent()) {
+            __keyword = Keyword.builder()
+                    .id(_keyword.get().getId())
+                    .count(_keyword.get().getCount() + 1)
+                    .build();
         } else {
-            int index = 0;
-            boolean rankCheck = false;
-            boolean equalCheck = false;
+            __keyword = Keyword.builder()
+                    .id(keyword)
+                    .count(1)
+                    .build();
+        }
+        /**
+         * 키워드 저장
+         */
+        keywordRepository.save(__keyword);
 
-            /**
-             * 인기 검색어 키워드와 새로운 검색어의 쿼리 숫자를 비교해서
-             * 새로운 검색어 키워드가 많으면 해당 순위 업데이트
-             * 그리고 그 이후의 기존 검색어 키워드들은 모두 한칸씩 순위 내리기 (전체 총 10개까지만)
-             */
-            for (PopularKeyword popularKeyword : popularKeywordList) {
-                index++;
-                System.out.println(popularKeyword.getKeyword());
-                System.out.println(popularKeyword.getNum());
-
-                if (_keyword.isPresent()) {
-
-                    System.out.println(_keyword.get().getNum() + 1);
-
-                    if (!rankCheck && popularKeyword.getNum() <= _keyword.get().getNum() + 1) {
-                        rankCheck = true;
-                        PopularKeyword _popularKeyword = PopularKeyword.builder()
-                            .id(index)
-                            .keyword(_keyword.get().getId())
-                            .num(_keyword.get().getNum() + 1)
-                            .build();
-                        popularKeywordRepository.save(_popularKeyword);
-
-                        /**
-                         * 동일한 검색어 쿼리일 경우는 인기검색어에서 카운트만 업데이트하고 나머지 키워드 순위 변동을 막는다
-                         */
-                        if (popularKeyword.getKeyword().equals(_keyword.get().getId())) {
-                            equalCheck = true;
-                        }
-                    }
-                } else {
-                    System.out.println("없는뎁쇼");
-
-                    if (!rankCheck && popularKeyword.getNum() <= 1) {
-                        rankCheck = true;
-                        PopularKeyword _popularKeyword = PopularKeyword.builder()
-                                .id(index)
-                                .keyword(keyword)
-                                .num(1)
-                                .build();
-                        popularKeywordRepository.save(_popularKeyword);
-
-                        /**
-                         * 동일한 검색어 쿼리일 경우는 인기검색어에서 카운트만 업데이트하고 나머지 키워드 순위 변동을 막는다
-                         */
-                        if (popularKeyword.getKeyword().equals(keyword)) {
-                            equalCheck = true;
-                        }
-                    }
-                }
+        /**
+         * 키워드 중복 여부 체크
+         */
+        int index = 0;
+        boolean existKeyword = false;
+        for (PopularKeyword ___keyword : popularKeywordList) {
+            if (___keyword.getKeyword() != null && ___keyword.getKeyword().equals(__keyword.getId())) {
+                ___keyword.setCount(__keyword.getCount());
 
                 /**
-                 * 인기검색어 리스트 저장 공간이 남아 있을 경우 인기검색어에 추가
+                 * 키워드 중복이 발견되면 인기검색어 순위내에서 최상단으로 옮김
                  */
-                System.out.println(rankCheck);
-                System.out.println(popularKeywordList.size());
-                System.out.println(index);
-                System.out.println(!rankCheck && popularKeywordList.size() < 10 && index == popularKeywordList.size());
-
-                if (!rankCheck && popularKeywordList.size() < 10 && index == popularKeywordList.size()) {
-                    PopularKeyword _popularKeyword = null;
-                    System.out.println(_keyword.isPresent());
-                    if (_keyword.isPresent()) {
-                        _popularKeyword = PopularKeyword.builder()
-                                .id(index)
-                                .keyword(keyword)
-                                .num(_keyword.get().getNum() + 1)
-                                .build();
-                    } else {
-                        _popularKeyword = PopularKeyword.builder()
-                                .id(index)
-                                .keyword(keyword)
-                                .num(1)
-                                .build();
+                int _index = 0;
+                for (PopularKeyword ____keyword : popularKeywordList) {
+                    if (____keyword.getCount() <= __keyword.getCount()) {
+                        popularKeywordList.remove(index);
+                        popularKeywordList.add(_index, PopularKeyword.builder().id(_index).keyword(__keyword.getId()).count(__keyword.getCount()).build());
+                        break;
                     }
-                    popularKeywordRepository.save(_popularKeyword);
+                    _index++;
                 }
 
-                if (rankCheck && !equalCheck) {
-                    if (index <= 10) {
-                        PopularKeyword _popularKeyword = PopularKeyword.builder()
-                                .id(index + 1)
-                                .keyword(popularKeyword.getKeyword())
-                                .num(popularKeyword.getNum())
-                                .build();
+                existKeyword = true;
+                break;
+            }
 
-                        popularKeywordRepository.save(_popularKeyword);
-                    }
+            index++;
+        }
+
+        /**
+         * 쿼리량을 체크하여 인기검색어에 추가
+         */
+        index = 0;
+        if (!existKeyword) {
+            for (PopularKeyword ___keyword : popularKeywordList) {
+                if (___keyword.getKeyword() == null || ___keyword.getCount() <= __keyword.getCount()) {
+                    popularKeywordList.add(index, PopularKeyword.builder().id(index).keyword(__keyword.getId()).count(__keyword.getCount()).build());
+
+                    break;
                 }
+                index++;
             }
         }
+
+        /**
+         * 인기검색어 저장
+         */
+        index = 0;
+        for (PopularKeyword popularKeyword : popularKeywordList) {
+            popularKeywordRepository.save(PopularKeyword.builder().id(index).keyword(popularKeyword.getKeyword()).count(popularKeyword.getCount()).build());
+            index++;
+            if (index > 9) break;
+        }
+
     }
 
     @Override

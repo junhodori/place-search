@@ -9,6 +9,7 @@ import Index from './views/Index'
 Vue.use(Router)
 
 const requireAuth = () => (from, to, next) => {
+    console.log('[token]' + store.state.accessToken)
     const isAuthenticated = store.state.accessToken ? 1 : 0
     if (isAuthenticated) return next()
     next('/login')

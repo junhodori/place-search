@@ -30,7 +30,7 @@
                         sm12
                         lg12
                     >
-                        <PopularKeyword @popularKeywordSearch="keywordSearch"/>
+                        <PopularKeyword @popularKeywordSearch="keywordSearch" ref="popularKeyword"/>
                     </v-flex>
 
                     <v-flex
@@ -41,12 +41,13 @@
                         <v-alert
                             border="left"
                             colored-border
-                            color="amber accent-4"
+                            :color="noQueryMessage ? 'error accent-4' : 'amber accent-4'"
                             elevation="2"
+                            :icon="noQueryMessage ? 'mdi-alert-circle' : 'mdi-alert-circle-outline'"
                         >
-                            <span v-if="noQueryMessage">검색어를 입력해주세요.</span>
+                            <span v-if="noQueryMessage" class="red--text">검색어를 입력해주세요.</span>
                             <span v-if="!noQueryMessage && metaInfo.total_count < 1">검색 결과가 없습니다.</span>
-                            <span v-if="!noQueryMessage && metaInfo.total_count > 0">Total Count : {{metaInfo.total_count}}</span>
+                            <span v-if="!noQueryMessage && metaInfo.total_count > 0">총 {{metaInfo.total_count}}개의 검색결과가 있습니다.</span>
                             <br/>
                         </v-alert>                    
                     </v-flex>
@@ -129,9 +130,11 @@ export default {
                 .then((response) => {
                     $this.placeList = response.data.documents
                     $this.metaInfo = response.data.meta
-                    console.log(response)
+
+                    $this.$refs.popularKeyword.axiosPopularKeyword()
                 }).catch(function(e) {
                     console.error(e)
+                    $this.logout()
                 })
             } else {
                 $this.noQueryMessage = true

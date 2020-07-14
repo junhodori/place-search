@@ -48,3 +48,22 @@ VueX, Vue-router
 
 Bean 등록
 참고사이트 : https://cbw1030.tistory.com/54
+
+VueX 새로고침시 store 문제 해결
+참고사이트 : http://blog.knowgari.com/state%EC%B4%88%EA%B8%B0%ED%99%94%EB%A7%89%EA%B8%B0
+
+
+
+예외상황
+API Server만 내려갔을 경우
+
+Junit 5
+Junit 5에서는 헷갈림 방지를 위해 아래와 같이 변경되었습니다.
+
+@BeforeClass -> @BeforeAll
+
+@Before -> @BeforeEach
+
+@After -> @AfterEach
+
+@AfterClass -> @AfterAll

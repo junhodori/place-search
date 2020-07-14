@@ -12,9 +12,9 @@ import java.util.Arrays;
 import java.util.List;
 
 //@Entity
-@RedisHash("user")
 @Getter
 @Setter
+@RedisHash("user")
 public class User implements Serializable {
 
     @Id

@@ -1,12 +1,16 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import axios from 'axios'
+import createPersistedState from 'vuex-persistedstate'
 
 Vue.use(Vuex)
 
-// const resourceHost = 'http://localhost:8081'
-
 export default new Vuex.Store({
+  plugins: [
+    createPersistedState({
+        paths: ['accessToken']
+    })
+  ],
   state: {
     accessToken: null,
     bearer: 'Bearer '

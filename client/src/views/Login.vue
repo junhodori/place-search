@@ -63,8 +63,8 @@
 export default {
     data() {
         return {
-            username: '',
-            password: '',
+            username: 'muzi',
+            password: '12345',
             rulesUsername: [
                 v => !!v || 'username 을 확인하세요'
             ],

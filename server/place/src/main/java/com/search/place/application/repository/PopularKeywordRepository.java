@@ -5,6 +5,6 @@ import org.springframework.data.repository.CrudRepository;
 
 import java.util.List;
 
-public interface PopularKeywordRepository extends CrudRepository<PopularKeyword, String> {
+public interface PopularKeywordRepository extends CrudRepository<PopularKeyword, Integer> {
     List<PopularKeyword> findAllByOrderById();
 }

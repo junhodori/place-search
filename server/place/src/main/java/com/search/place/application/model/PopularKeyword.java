@@ -22,12 +22,12 @@ public class PopularKeyword implements Serializable {
     private String keyword;
 
     @Column(nullable = false)
-    private Integer num;
+    private Integer count;
 
     @Builder
-    public PopularKeyword(Integer id, String keyword, Integer num) {
+    public PopularKeyword(Integer id, String keyword, Integer count) {
         this.id = id;
         this.keyword = keyword;
-        this.num = num;
+        this.count = count;
     }
 }

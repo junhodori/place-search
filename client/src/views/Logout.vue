@@ -20,7 +20,7 @@
                     outlined
                     type="success"
                 >
-                    <strong>로그아웃 성공</strong>
+                    <strong>로그아웃</strong>
                     <br/>
                     다시 로그인 하시겠습니까?
                     <v-divider

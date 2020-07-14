@@ -19,11 +19,11 @@ public class Keyword implements Serializable {
     private String id;
 
     @Column(nullable = false)
-    private Integer num;
+    private Integer count;
 
     @Builder
-    public Keyword(String id, Integer num) {
+    public Keyword(String id, Integer count) {
         this.id = id;
-        this.num = num;
+        this.count = count;
     }
 }

@@ -10,17 +10,19 @@
             :color="color[index % color.length]"
             text-color="white"
             v-for="(popularKeyword, index) in popularKeywordList"
-            :key="popularKeyword.keyword"
+            :key="index"
             @click="popularKeywordSearch(popularKeyword.keyword)"
+            v-show="popularKeyword.keyword != null"
             >
-                {{popularKeyword.keyword}}
                 <v-avatar
-                    right
+                    left
                     class="darken-4"
                     :class="color[index % color.length]"
                 >
-                    {{popularKeyword.num}}
+                    {{index + 1}}
                 </v-avatar>
+                {{popularKeyword.keyword}}
+                    {{popularKeyword.num}}
             </v-chip>            
         </v-system-bar>
 
@@ -59,6 +61,7 @@ export default {
             $this.$http.get(url, {headers: headers})
             .then((response) => {
                 $this.popularKeywordList = response.data
+                console.log($this.popularKeywordList)
 
                 console.log(response)
             }).catch(function(e) {
