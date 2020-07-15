@@ -10,8 +10,8 @@ import axios from 'axios'
 import VueAxios from 'vue-axios'
 
 Vue.use(VueAxios, axios)
-// Vue.axios.defaults.baseURL = 'http://localhost:8080'
-Vue.axios.defaults.baseURL = 'http://49.50.160.25:8080'
+Vue.axios.defaults.baseURL = 'http://localhost:8080'
+//Vue.axios.defaults.baseURL = 'http://49.50.160.25:8080'
 
 new Vue({
   vuetify,
