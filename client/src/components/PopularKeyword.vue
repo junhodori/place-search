@@ -61,9 +61,6 @@ export default {
             $this.$http.get(url, {headers: headers})
             .then((response) => {
                 $this.popularKeywordList = response.data
-                console.log($this.popularKeywordList)
-
-                console.log(response)
             }).catch(function(e) {
                 console.error(e)
             })

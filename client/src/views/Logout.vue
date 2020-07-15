@@ -57,7 +57,7 @@
     mounted: function() {
         let $this = this
         $this.$store.dispatch('LOGOUT')
-            .then(() => console.log('Logout Success!'))
+            .then(() => console.log('Logout..'))
             .catch((e) => console.log(e))
     },
     methods: {

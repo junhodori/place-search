@@ -45,9 +45,10 @@
                             elevation="2"
                             :icon="noQueryMessage ? 'mdi-alert-circle' : 'mdi-alert-circle-outline'"
                         >
-                            <span v-if="noQueryMessage" class="red--text">검색어를 입력해주세요.</span>
-                            <span v-if="!noQueryMessage && metaInfo.total_count < 1">검색 결과가 없습니다.</span>
-                            <span v-if="!noQueryMessage && metaInfo.total_count > 0">총 {{metaInfo.total_count}}개의 검색결과가 있습니다.</span>
+                            <span v-if="firstLogin" class="amber--text font-weight-bold">로그인을 환영합니다. 검색어를 입력해주세요.</span>
+                            <span v-if="noQueryMessage" class="red--text font-weight-bold">검색어를 입력해주세요.</span>
+                            <span v-if="!noQueryMessage && metaInfo.total_count < 1" class="font-weight-bold">검색 결과가 없습니다.</span>
+                            <span v-if="!noQueryMessage && metaInfo.total_count > 0" class="font-weight-bold">총 {{metaInfo.total_count}}개의 검색결과가 있습니다.</span>
                             <br/>
                         </v-alert>                    
                     </v-flex>
@@ -104,13 +105,16 @@ export default {
             visiblePageLimit: 5,
             noQueryMessage: false,
             longitude: '37.5172187',
-            latitude: '127.0411989'
+            latitude: '127.0411989',
+            firstLogin: false
         }
     },
     methods: {
         axiosPlaceSearch: function() {
             let $this = this
             let url = 'api/kakao/placeSearch'
+            $this.firstLogin = false
+
             let headers = {
                 Authorization: $this.$store.state.bearer + $this.$store.state.accessToken
             }
@@ -138,7 +142,6 @@ export default {
                 })
             } else {
                 $this.noQueryMessage = true
-                console.log('키워드를 입력하세요')
             }
         },
         keywordSearch: function(keyword) {
@@ -163,6 +166,15 @@ export default {
             let $this = this
             $this.pageLimit = Math.ceil($this.metaInfo.pageable_count / $this.size)
         }
+    },
+    beforeRouteEnter: function(to, from, next) {
+        next($this => {
+            if (from.path == '/login') {
+                $this.firstLogin = true
+            } else {
+                $this.firstLogin = false
+            }
+        })
     }
 }
 </script>
