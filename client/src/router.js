@@ -14,6 +14,12 @@ const requireAuth = () => (from, to, next) => {
     next('/login')
 }
 
+const requireRootAuth = () => (from, to, next) => {
+    const isAuthenticated = store.state.accessToken ? 1 : 0
+    if (isAuthenticated) return next('/index')
+    next('/login')
+}
+
 export default new Router({
     routes: [
         {
@@ -31,8 +37,13 @@ export default new Router({
             beforeEnter: requireAuth()
         },
         {
+            path: '/',
+            beforeEnter: requireRootAuth()
+        },
+        {
             path: '/*',
             component: Denied
-        }        
+        }
+        
     ]
 })
