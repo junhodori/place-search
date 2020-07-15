@@ -21,8 +21,8 @@
                 >
                     {{index + 1}}
                 </v-avatar>
-                {{popularKeyword.keyword}}
-                    {{popularKeyword.num}}
+                <span>{{popularKeyword.keyword}}</span>
+                <span style="margin-left: 15px;">{{popularKeyword.count}}</span>
             </v-chip>            
         </v-system-bar>
 

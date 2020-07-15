@@ -8,6 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.connection.RedisZSetCommands;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 
@@ -24,6 +26,7 @@ public class PopularKeywordServiceImpl implements PopularKeywordService {
     RedisTemplate redisTemplate;
 
     @Override
+    @Transactional(isolation = Isolation.READ_COMMITTED)
     public void insertPopularKeyword(String keyword) {
         List<PopularKeyword> popularKeywordList = popularKeywordRepository.findAllByOrderById();
 
