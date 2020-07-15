@@ -7,7 +7,7 @@
 ## 1.1. 장소 검색 서비스란?
 오픈 API를 활용하여 현재 위치로 부터 가까운 장소 검색을 제공
 
-Demo : http://www.junhodori.com
+Demo : http://49.50.160.25 (http://www.junhodori.com)
 
 # 2.환경
 ## 2.1 개발 환경
